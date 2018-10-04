@@ -234,13 +234,10 @@ define java::oracle (
 
   case $ensure {
     'present' : {
-      archive { $destination :
-        ensure       => present,
-        source       => $source,
-        cookie       => 'gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie',
-        extract_path => '/tmp',
-        cleanup      => false,
-        creates      => $creates_path,
+      exec { "Download Oracle RPM" :
+            path    => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
+            command => "curl -v -j -k -L -H \"Cookie: oraclelicense=accept-securebackup-cookie\" ${source} > /tmp/${package_name}",
+            creates => $creates_path,
       }
       case $::kernel {
         'Linux' : {
